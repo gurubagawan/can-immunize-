@@ -32,8 +32,8 @@ const {
   displayHCTypes
 } = repositoryPage
 
-context('Main Page', ()=>{
-  describe('Test for logging ing', ()=>{
+context('Repository page', ()=>{
+  describe('Tests for creating a new patient', ()=>{
     beforeEach(()=>{
       loginPage.signinAsUser('harry@canimmunize.ca', 'Testing123!')
       navBar.navigateToPage('repository')

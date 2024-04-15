@@ -96,13 +96,9 @@ class repositoryPage {
     cy.intercept('https://api.novascotia.flow.qa.canimmunize.dev/fhir/v1/user').as('getUser')
     cy.intercept('POST', 'https://api.novascotia.flow.qa.canimmunize.dev/fhir/v1/Patient').as('createPatient')
 
-
-
-
     this.openNewPatientForm()
     cy.wait('@getHcnTypes')
     cy.wait('@getOrganizationTypes')
-    // cy.wait('@getUser')
     cy.get('.ant-modal-body').should('exist')
     cy.wait(2000)
     this.formElements.firstNameField().type(firstName)
@@ -113,7 +109,7 @@ class repositoryPage {
     phone && this.formElements.phoneField().type(phone)
     this.formElements.healthCardNumberField().type(healthCardNumber)
     this.selectHCType(healthCardType)
-    this.selectOrganization('Shoppers Drug Mart - Shoppers Drug Mart')
+    this.selectOrganization(managingOrganization)
     this.selectGenderTypes(gender)
     cy.getAndFind('.ant-modal-footer', '.ant-btn-primary').click()
     cy.wait('@createPatient').then((interception) => {
