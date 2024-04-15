@@ -14,7 +14,6 @@ class repositoryPage {
     phoneField: () => cy.get('#phone'),
     deceasedSwitch: () => cy.get('.ant-switch'),
     organizationField: () => cy.get('#organizationId'),
-   
   }
 
   displayElements = {
@@ -22,6 +21,20 @@ class repositoryPage {
     birthDate: () => cy.get('.ant-table-row > .cy-patientDOB'),
     gender: () => cy.get('.ant-table-row > .cy-patientGender'),
     healthCardNumber: () => cy.get('.ant-table-row > .cy-patientHCN')
+  }
+
+  detailsElements = {
+    headerName: () => cy.get('.ant-page-header-heading'),
+    firstName: () => cy.get('.ant-descriptions-item-content.cy-patientFirstName'),
+    lastName: () => cy.get('.ant-descriptions-item-content.cy-patientLastName'),
+    gender: () => cy.get('.ant-descriptions-item-content.cy-patientGender'),
+    preferredName: () => cy.get('.ant-descriptions-item-content.cy-patientPreferredName'),
+    healthCardNumber: () => cy.get('.ant-descriptions-item-content.cy-patientHealthCardNumber'),
+    managingOrganization: () => cy.get('ant-descriptions-item-content.cy-patientManagingOrg'),
+    deletePatient: () => cy.get('[data-cy="delete"]'),
+    confirmDelete: () => cy.get('.ant-popover-buttons > .ant-btn-primary'),
+    deleteReason: () => cy.get('#deleteReason'),
+    finalDeleteButton: () => cy.get('.ant-modal-footer > .ant-btn-primary')
   }
 
   genderTypes = {
@@ -33,19 +46,19 @@ class repositoryPage {
   }
 
   hcTypes = {
-    ab: 'Alberta',
-    bc: 'British Columbia',
-    mb: 'Manitoba',
-    nb: 'New Brunswick',
-    nf: 'Newfoundland and Labrador',
-    ns: 'Nova Scotia',
-    nv: 'Nunavut',
-    on: 'Ontario',
-    pe: 'Prince Edward Island',
-    qc: 'Quebec',
-    sk: 'Saskatchewan',
-    yk: 'Yukon',
-    out: 'Out of Country Reference ID'
+    AB: 'Alberta',
+    BC: 'British Columbia',
+    MB: 'Manitoba',
+    NB: 'New Brunswick',
+    NF: 'Newfoundland and Labrador',
+    NS: 'Nova Scotia',
+    NV: 'Nunavut',
+    ON: 'Ontario',
+    PEI: 'Prince Edward Island',
+    QC: 'Quebec',
+    SK: 'Saskatchewan',
+    YK: 'Yukon',
+    OUTCAN: 'Out of Country Reference ID'
   }
 
   openNewPatientForm(){
@@ -81,12 +94,15 @@ class repositoryPage {
     cy.intercept('https://api.novascotia.flow.qa.canimmunize.dev/fhir/v1/hcn-types').as('getHcnTypes')
     cy.intercept('https://api.novascotia.flow.qa.canimmunize.dev/fhir/v1/Organization').as('getOrganizationTypes')
     cy.intercept('https://api.novascotia.flow.qa.canimmunize.dev/fhir/v1/user').as('getUser')
+    cy.intercept('POST', 'https://api.novascotia.flow.qa.canimmunize.dev/fhir/v1/Patient').as('createPatient')
+
+
 
 
     this.openNewPatientForm()
     cy.wait('@getHcnTypes')
     cy.wait('@getOrganizationTypes')
-    cy.wait('@getUser')
+    // cy.wait('@getUser')
     cy.get('.ant-modal-body').should('exist')
     cy.wait(2000)
     this.formElements.firstNameField().type(firstName)
@@ -100,25 +116,20 @@ class repositoryPage {
     this.selectOrganization('Shoppers Drug Mart - Shoppers Drug Mart')
     this.selectGenderTypes(gender)
     cy.getAndFind('.ant-modal-footer', '.ant-btn-primary').click()
-    cy.wait(1000)
+    cy.wait('@createPatient').then((interception) => {
+      expect(interception.response.statusCode).to.be.oneOf([200, 201]); // Check for success status codes
+    });
   }
 
-  verifyPatientInfo({
-    firstName,
-    lastName,
-    preferredName,
-    pronoun,
-    birthDate,
-    gender,
-    healthCardType,
-    healthCardNumber,
-    email,
-    phone,
-    deceased,
-    managingOrganization,
-  }){
-    const displayName = lastName + ', ' + firstName + (preferredName ? ` (${preferredName})` : '');
-    this.displayElements.fullName().contains(displayName)
+  deletePatient(reason = 'NA'){
+    cy.intercept('DELETE', 'https://api.novascotia.flow.qa.canimmunize.dev/fhir/v1/Patient/*').as('deletePatient')
+    this.detailsElements.deletePatient().click()
+    this.detailsElements.confirmDelete().click()
+    this.detailsElements.deleteReason().type(reason)
+    this.detailsElements.finalDeleteButton().click()
+    cy.wait('@deletePatient').then((interception) => {
+      expect(interception.response.statusCode).to.be.oneOf([200, 201]); // Check for success status codes
+    });
   }
 }
 

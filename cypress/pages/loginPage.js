@@ -6,6 +6,7 @@ class loginPage {
   }
 
   signinAsUser(username, password){
+    cy.visit('/')
     cy.intercept('/oauth/token').as('authLogin')
     this.elements.userNameField().type(username)
     this.elements.passwordField().type(password)
