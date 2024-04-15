@@ -1,6 +1,7 @@
 const loginPage = require("../pages/loginPage");
 const navBar = require("../pages/components/navBar");
 const repositoryPage = require("../pages/repository");
+const headerBar = require("../pages/components/headerBar");
 
 const newPatient = {
   firstName: 'Jake',
@@ -9,7 +10,8 @@ const newPatient = {
   birthDate: '1994-12-03',
   healthCardNumber: '5642651573',
   healthCardType: 'ON',
-  gender: 'm'
+  gender: 'm',
+  managingOrganization: 'Shoppers Drug Mart - Shoppers Drug Mart'
 }
 
 const newPatient2 = {
@@ -37,16 +39,14 @@ context('Main Page', ()=>{
       navBar.navigateToPage('repository')
     })
     afterEach(()=>{
-      cy.get('.ant-dropdown-trigger > p').click()
-      cy.wait(1000)
-      cy.get('.ant-dropdown-menu').children().last().click()
+      headerBar.logoutUser()
     })
     it('Checks that clicking Nav link navigates to repository page', () => {
 
       cy.url().should('contain', '/patients')
     });
 
-    it.only('checks all fields are on new patient form', () => {
+    it('checks all fields are on new patient form', () => {
       navBar.navigateToPage('repository')
       repositoryPage.openNewPatientForm()
       for (const key in repositoryPage.formElements) {
@@ -80,7 +80,6 @@ context('Main Page', ()=>{
 
     it('Checks that pateint can be created and all table page info is correct', ()=>{
       const displayName = newPatient.lastName + ', ' + newPatient.firstName + (newPatient.preferredName && ` (${newPatient.preferredName})`)
-      const displayHC = newPatient.healthCardNumber + ` (${newPatient.healthCardType})`
 
       repositoryPage.addNewPatient(newPatient)
       navBar.navigateToPage('repository')
