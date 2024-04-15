@@ -1,4 +1,5 @@
 class repositoryPage {
+  apiURL = (Cypress.env('apiUrl'))
   formElements = {
     newPatientButton : () => cy.get('[data-cy=new]'),
     firstNameField : () => cy.get('#firstName'),
@@ -91,10 +92,11 @@ class repositoryPage {
     deceased,
     managingOrganization,
   }){
-    cy.intercept('https://api.novascotia.flow.qa.canimmunize.dev/fhir/v1/hcn-types').as('getHcnTypes')
-    cy.intercept('https://api.novascotia.flow.qa.canimmunize.dev/fhir/v1/Organization').as('getOrganizationTypes')
-    cy.intercept('https://api.novascotia.flow.qa.canimmunize.dev/fhir/v1/user').as('getUser')
-    cy.intercept('POST', 'https://api.novascotia.flow.qa.canimmunize.dev/fhir/v1/Patient').as('createPatient')
+    cy.log(Cypress.env('apiUrl'))
+    cy.intercept(`${this.apiURL}/hcn-types`).as('getHcnTypes')
+    cy.intercept(`${this.apiURL}/Organization`).as('getOrganizationTypes')
+    cy.intercept(`${this.apiURL}/user`).as('getUser')
+    cy.intercept('POST', `${this.apiURL}/Patient`).as('createPatient')
 
     this.openNewPatientForm()
     cy.wait('@getHcnTypes')
@@ -118,7 +120,7 @@ class repositoryPage {
   }
 
   deletePatient(reason = 'NA'){
-    cy.intercept('DELETE', 'https://api.novascotia.flow.qa.canimmunize.dev/fhir/v1/Patient/*').as('deletePatient')
+    cy.intercept('DELETE', `${this.apiURL}/Patient/*`).as('deletePatient')
     this.detailsElements.deletePatient().click()
     this.detailsElements.confirmDelete().click()
     this.detailsElements.deleteReason().type(reason)

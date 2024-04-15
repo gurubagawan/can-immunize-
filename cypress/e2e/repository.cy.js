@@ -41,8 +41,8 @@ context('Repository page', ()=>{
     afterEach(()=>{
       headerBar.logoutUser()
     })
+    
     it('Checks that clicking Nav link navigates to repository page', () => {
-
       cy.url().should('contain', '/patients')
     });
 

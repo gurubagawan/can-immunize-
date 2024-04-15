@@ -4,6 +4,9 @@ module.exports = {
       // implement node event listeners here
     },
     baseUrl: "https://novascotia.flow.qa.canimmunize.dev",
-    chromeWebSecurity: false
+    chromeWebSecurity: false,
+    env: {
+      apiUrl: "https://api.novascotia.flow.qa.canimmunize.dev/fhir/v1/",
+    }
   },
 };
