@@ -35,7 +35,7 @@ const {
 context('Repository page', ()=>{
   describe('Tests for creating a new patient', ()=>{
     beforeEach(()=>{
-      loginPage.signinAsUser(process.env.USER_NAME, process.env.PASSWORD)
+      loginPage.signinAsUser(Cypress.env("USER_NAME"), Cypress.env("PASSWORD"))
       navBar.navigateToPage('repository')
     })
     afterEach(()=>{
