@@ -61,7 +61,7 @@ context('Repository page', ()=>{
       repositoryPage.deletePatient()
     });
 
-    it.only('Checks that pateint can be created and all details page is correct', ()=>{
+    it('Checks that pateint can be created and all details page is correct', ()=>{
       const displayName = newPatient.lastName + ', ' + newPatient.firstName + (newPatient.preferredName && ` (${newPatient.preferredName})`)
       const displayHC = newPatient.healthCardNumber + ` (${newPatient.healthCardType})`
       repositoryPage.addNewPatient(newPatient)
