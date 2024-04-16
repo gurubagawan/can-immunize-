@@ -35,7 +35,7 @@ const {
 context('Repository page', ()=>{
   describe('Tests for creating a new patient', ()=>{
     beforeEach(()=>{
-      loginPage.signinAsUser('harry@canimmunize.ca', 'Testing123!')
+      loginPage.signinAsUser(process.env.USER_NAME, process.env.PASSWORD)
       navBar.navigateToPage('repository')
     })
     afterEach(()=>{
