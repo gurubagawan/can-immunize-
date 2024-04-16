@@ -61,11 +61,10 @@ context('Repository page', ()=>{
       repositoryPage.deletePatient()
     });
 
-    it('Checks that pateint can be created and all details page is correct', ()=>{
+    it.only('Checks that pateint can be created and all details page is correct', ()=>{
       const displayName = newPatient.lastName + ', ' + newPatient.firstName + (newPatient.preferredName && ` (${newPatient.preferredName})`)
       const displayHC = newPatient.healthCardNumber + ` (${newPatient.healthCardType})`
       repositoryPage.addNewPatient(newPatient)
-      cy.wait(2000)
 
       detailsElements.headerName().contains(displayName)
       detailsElements.firstName().contains(newPatient.firstName)
@@ -90,7 +89,6 @@ context('Repository page', ()=>{
       displayElements.healthCardNumber().contains(newPatient.healthCardNumber)
       displayElements.fullName().click()
 
-      cy.wait(2000)
 
       repositoryPage.deletePatient()
       
